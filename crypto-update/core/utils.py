@@ -5,6 +5,10 @@ import json
 from datetime import datetime
 
 
+
+redisClient = redis.StrictRedis(host='127.0.0.1', port=6379, db=0)
+
+
 def set_time(minute: int):
     if minute == 1:
         start_time = int(datetime.timestamp(datetime.now())) - 60
