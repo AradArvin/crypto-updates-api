@@ -11,8 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-import crontab
-from core.tasks import async_cryptodata_catcher
+from celery.schedules import crontab
+import core.tasks
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -109,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tehran'
 
 USE_I18N = True
 
@@ -129,22 +129,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Celery settings
 
-CELERY_BROKER_URL = 'amqp://guest:guest@rabbitmq:5672/'
-CELERY_RESULT_BACKEND = "redis://redis:6379/1"
+CELERY_BROKER_URL = "redis://127.0.0.1:6379/1"
+CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/1"
 CELERY_TIMEZONE = 'Asia/Tehran'
-CELERY_TASK_ANNOTATIONS = {'*': {'rate_limit': '100/m'}}
+
 
 
 
 # Celery-Beat settings
 
 CELERY_BEAT_SCHEDULE = {
-    "1_min_update_time": {
+    "task_1_min_update_time": {
         "task": "core.tasks.async_cryptodata_catcher",
         "schedule": crontab(minute="*/1"),
         "args": (1,),
     },
-    "5_min_update_time": {
+    "task_5_min_update_time": {
         "task": "core.tasks.async_cryptodata_catcher",
         "schedule": crontab(minute="*/5"),
         "args": (5,),
